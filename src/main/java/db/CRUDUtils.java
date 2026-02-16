@@ -9,11 +9,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class with basic JDBC operations for User entity.
+ */
 public class CRUDUtils {
 
     private static String INSERT_USER = "INSERT INTO users (name, surname, email, address) VALUES (?, ?, ?, ?)";
     private static String DELETE_USER = "DELETE FROM users WHERE id = ?";
 
+    /**
+     * Executes custom query and maps result set to list of users.
+     *
+     * @param query select query
+     * @return users list
+     */
     public static List<User> getAllUsers(String query) {
         List<User> all_users = new ArrayList<User>();
         try (Connection connection = DBUtils.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -36,6 +45,12 @@ public class CRUDUtils {
         return all_users;
     }
 
+    /**
+     * Inserts one user row into users table.
+     *
+     * @param user user data
+     * @return currently returns empty list
+     */
     public static List<User> addUser(User user) {
         List<User> all_users = new ArrayList<User>();
         try (Connection connection = DBUtils.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
@@ -53,6 +68,13 @@ public class CRUDUtils {
         return all_users;
     }
 
+    /**
+     * Loads users by optional name and surname filters.
+     *
+     * @param name optional name filter
+     * @param surname optional surname filter
+     * @return filtered users list
+     */
     public static List<User> getUsersByNameAndSurname(String name, String surname) {
         List<User> all_users = new ArrayList<User>();
         String sqlQuery = "SELECT * FROM users WHERE 1=1";
@@ -93,6 +115,12 @@ public class CRUDUtils {
         return all_users;
     }
 
+    /**
+     * Removes user by id.
+     *
+     * @param id user id
+     * @return true if user was removed
+     */
     public static boolean removeUser(int id) {
         try (Connection connection = DBUtils.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER)) {
             preparedStatement.setInt(1, id);
@@ -104,6 +132,14 @@ public class CRUDUtils {
         }
     }
 
+    /**
+     * Updates user name and surname by id.
+     *
+     * @param id user id
+     * @param name new name
+     * @param surname new surname
+     * @return true if user was updated
+     */
     public static boolean updateUser(int id, String name, String surname) {
         try (Connection connection = DBUtils.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET name = ?, surname = ? WHERE id = ?")) {
             preparedStatement.setString(1, name);

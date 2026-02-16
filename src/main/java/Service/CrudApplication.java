@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import db.CRUDUtils;
 
-import java.io.*;
-import java.util.Collection;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
- *
+ * Main Spring Boot application with HTTP endpoints for User CRUD and CSV import.
  */
 @SpringBootApplication
 @RestController
@@ -41,6 +40,15 @@ public class CrudApplication {
         return allUsers.toString();
     }
 
+    /**
+     * Adds one user to database.
+     *
+     * @param name user name
+     * @param surname user surname
+     * @param email user email
+     * @param address user address
+     * @return operation result text
+     */
     @PostMapping("/api/add_user")
     public String addUser(
             @RequestParam(required = false) String name,
@@ -56,6 +64,12 @@ public class CrudApplication {
         return "User: " + "###" + name + "###" + "###" + surname + "###" + " added successfully";
     }
 
+    /**
+     * Removes user by id.
+     *
+     * @param id user id
+     * @return operation result text
+     */
     @DeleteMapping("/api/remove_user")
     public String removeUser(@RequestParam int id) {
         boolean isUserRemoved = CRUDUtils.removeUser(id);
@@ -66,6 +80,17 @@ public class CrudApplication {
         return "User with id " + id + " was not found";
     }
 
+    /**
+     * Updates user by id.
+     * Current implementation updates only name and surname in DB layer.
+     *
+     * @param id user id
+     * @param name user name
+     * @param surname user surname
+     * @param email user email (currently not used in DB update)
+     * @param address user address (currently not used in DB update)
+     * @return operation result text
+     */
     @PutMapping("/api/update_user")
     public String updateUser(
             @RequestParam int id,
@@ -78,6 +103,14 @@ public class CrudApplication {
         return isUserUpdated ? "User with id " + id + " updated successfully" : "User with id " + id + " was not found";
     }
 
+    /**
+     * Imports users from CSV file.
+     * CSV is expected to have header and 4 columns in each row:
+     * name,surname,email,address
+     *
+     * @param file CSV file from multipart/form-data request
+     * @return import result text with added rows count
+     */
     @PostMapping("/api/import_users_csv")
     public String importUsersCsv(@RequestParam("file") MultipartFile file) {
         int addedUsersCount = 0;
