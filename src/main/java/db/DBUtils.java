@@ -6,12 +6,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Utility class responsible for opening JDBC connections.
+ */
 public class DBUtils {
 
-    private static final String DB_URL = "jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:init.sql'";
+    private static final String DB_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:init.sql'";
     private static final String DB_USERNAME = "sa";
     private static final String DB_PASSWORD = "";
 
+    /**
+     * Creates and returns a new database connection.
+     *
+     * @return opened JDBC connection
+     * @throws SQLException if connection cannot be opened
+     */
     public static Connection getConnection() throws SQLException {
 
 //        String DB_URL = null, DB_USERNAME = null, DB_PASSWORD = null;

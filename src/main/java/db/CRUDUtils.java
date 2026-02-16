@@ -12,19 +12,20 @@ import java.util.List;
 public class CRUDUtils {
 
     private static String INSERT_USER = "INSERT INTO users (name, surname, email, address) VALUES (?, ?, ?, ?)";
+    private static String DELETE_USER = "DELETE FROM users WHERE id = ?";
 
     public static List<User> getAllUsers(String query) {
         List<User> all_users = new ArrayList<User>();
         try (Connection connection = DBUtils.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-//                int id = rs.getInt("id");
+                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
                 String email = rs.getString("email");
                 String address = rs.getString("address");
 
-                all_users.add(new User(name, surname, email, address));
+                all_users.add(new User(id, name, surname, email, address));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -77,17 +78,29 @@ public class CRUDUtils {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
+                int id = resultSet.getInt("id");
                 String userName = resultSet.getString("name");
                 String userSurname = resultSet.getString("surname");
                 String userEmail = resultSet.getString("email");
                 String userAddress = resultSet.getString("address");
 
-                all_users.add(new User(userName, userSurname, userEmail, userAddress));
+                all_users.add(new User(id, userName, userSurname, userEmail, userAddress));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
 
         return all_users;
+    }
+
+    public static boolean removeUser(int id) {
+        try (Connection connection = DBUtils.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER)) {
+            preparedStatement.setInt(1, id);
+            int deletedRowsCount = preparedStatement.executeUpdate();
+            return deletedRowsCount > 0;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return false;
+        }
     }
 }
