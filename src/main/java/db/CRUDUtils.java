@@ -103,4 +103,19 @@ public class CRUDUtils {
             return false;
         }
     }
+
+    public static boolean updateUser(int id, String name, String surname) {
+        try (Connection connection = DBUtils.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET name = ?, surname = ? WHERE id = ?")) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setInt(3, id);
+            int updatedRowsCount = preparedStatement.executeUpdate();
+            return updatedRowsCount > 0;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return false;
+        } finally {
+
+        }
+    }
 }
