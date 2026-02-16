@@ -63,10 +63,13 @@ Anna,Stone,anna@example.com,Green Street 3
 Bob,River,bob@example.com,Blue Street 5
 ```
 
+Sample file in this repository:
+- `users_sample.csv`
+
 Request:
 ```bash
 curl -X POST "http://localhost:9090/api/import_users_csv" \
-  -F "file=@/home/dmytro/IdeaProjects/CRUD/users.csv"
+  -F "file=@/home/dmytro/IdeaProjects/CRUD/users_sample.csv"
 ```
 
 Important: endpoint expects `multipart/form-data`.
